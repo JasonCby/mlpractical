@@ -25,6 +25,7 @@ class SumOfSquaredDiffsError(object):
         Returns:
             Scalar error function value.
         """
+        return sum( sum( (outputs - targets)**2 )/2 )/outputs.shape[0]
         raise NotImplementedError()
 
     def grad(self, outputs, targets):
@@ -38,6 +39,7 @@ class SumOfSquaredDiffsError(object):
             Gradient of error function with respect to outputs. This should be
             an array of shape (batch_size, output_dim).
         """
+        return (outputs - targets)/ outputs.shape[0]
         raise NotImplementedError()
 
     def __repr__(self):
