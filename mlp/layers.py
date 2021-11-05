@@ -147,6 +147,96 @@ class StochasticLayer(Layer):
         """
         raise NotImplementedError()
 
+class L1Penalty(object):
+    """L1 parameter penalty.
+    
+    Term to add to the objective function penalising parameters
+    based on their L1 norm.
+    """
+    
+    def __init__(self, coefficient):
+        """Create a new L1 penalty object.
+        
+        Args:
+            coefficient: Positive constant to scale penalty term by.
+        """
+        assert coefficient > 0., 'Penalty coefficient must be positive.'
+        self.coefficient = coefficient
+        
+    def __call__(self, parameter):
+        """Calculate L1 penalty value for a parameter.
+        
+        Args:
+            parameter: Array corresponding to a model parameter.
+            
+        Returns:
+            Value of penalty term.
+        """
+        return self.coefficient * np.linalg.norm(parameter, ord=1, axis=0).sum()
+        raise NotImplementedError()
+
+        
+    def grad(self, parameter):
+        """Calculate the penalty gradient with respect to the parameter.
+        
+        Args:
+            parameter: Array corresponding to a model parameter.
+            
+        Returns:
+            Value of penalty gradient with respect to parameter. This
+            should be an array of the same shape as the parameter.
+        """
+        
+        return self.coefficient * np.sign(parameter)
+        raise NotImplementedError()
+    
+    def __repr__(self):
+        return 'L1Penalty({0})'.format(self.coefficient)
+        
+
+class L2Penalty(object):
+    """L1 parameter penalty.
+    
+    Term to add to the objective function penalising parameters
+    based on their L2 norm.
+    """
+
+    def __init__(self, coefficient):
+        """Create a new L2 penalty object.
+        
+        Args:
+            coefficient: Positive constant to scale penalty term by.
+        """
+        assert coefficient > 0., 'Penalty coefficient must be positive.'
+        self.coefficient = coefficient
+        
+    def __call__(self, parameter):
+        """Calculate L2 penalty value for a parameter.
+        
+        Args:
+            parameter: Array corresponding to a model parameter.
+            
+        Returns:
+            Value of penalty term.
+        """
+        return self.coefficient * (np.linalg.norm(parameter, ord=2, axis=0)**2).sum()/2
+        raise NotImplementedError()
+        
+    def grad(self, parameter):
+        """Calculate the penalty gradient with respect to the parameter.
+        
+        Args:
+            parameter: Array corresponding to a model parameter.
+            
+        Returns:
+            Value of penalty gradient with respect to parameter. This
+            should be an array of the same shape as the parameter.
+        """
+        return self.coefficient * parameter
+        raise NotImplementedError()
+    
+    def __repr__(self):
+        return 'L2Penalty({0})'.format(self.coefficient)
 
 class AffineLayer(LayerWithParameters):
     """Layer implementing an affine tranformation of its inputs.
@@ -227,10 +317,12 @@ class AffineLayer(LayerWithParameters):
         grads_wrt_biases = np.sum(grads_wrt_outputs, axis=0)
 
         if self.weights_penalty is not None:
-            grads_wrt_weights += self.weights_penalty.grad(self.weights)
+            l2 = L2Penalty(self.weights_penalty)
+            grads_wrt_weights += l2.grad(self.weights)
 
         if self.biases_penalty is not None:
-            grads_wrt_biases += self.biases_penalty.grad(self.biases)
+            l2 = L2Penalty(self.biases_penalty)
+            grads_wrt_biases += l2.grad(self.biases)
 
         return [grads_wrt_weights, grads_wrt_biases]
 
@@ -241,9 +333,11 @@ class AffineLayer(LayerWithParameters):
         """
         params_penalty = 0
         if self.weights_penalty is not None:
-            params_penalty += self.weights_penalty(self.weights)
+            l2 = L2Penalty(self.weights_penalty)
+            params_penalty += l2(self.weights)
         if self.biases_penalty is not None:
-            params_penalty += self.biases_penalty(self.biases)
+            l2 = L2Penalty(self.biases_penalty)
+            params_penalty += l2(self.biases)
         return params_penalty
 
     @property
