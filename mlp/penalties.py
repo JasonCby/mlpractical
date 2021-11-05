@@ -29,6 +29,7 @@ class L1Penalty(object):
         Returns:
             Value of penalty term.
         """
+        return self.coefficient * np.linalg.norm(parameter, ord=1, axis=0).sum()
         raise NotImplementedError
 
     def grad(self, parameter):
@@ -41,6 +42,7 @@ class L1Penalty(object):
             Value of penalty gradient with respect to parameter. This
             should be an array of the same shape as the parameter.
         """
+        return self.coefficient * np.sign(parameter)
         raise NotImplementedError
 
     def __repr__(self):
@@ -72,6 +74,7 @@ class L2Penalty(object):
         Returns:
             Value of penalty term.
         """
+        return self.coefficient * (np.linalg.norm(parameter, ord=2, axis=0)**2).sum()/2
         raise NotImplementedError
 
     def grad(self, parameter):
@@ -84,6 +87,7 @@ class L2Penalty(object):
             Value of penalty gradient with respect to parameter. This
             should be an array of the same shape as the parameter.
         """
+        return self.coefficient * parameter
         raise NotImplementedError
 
     def __repr__(self):
