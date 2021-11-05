@@ -207,6 +207,7 @@ class AffineLayer(LayerWithParameters):
     def __repr__(self):
         return 'AffineLayer(input_dim={0}, output_dim={1})'.format(
             self.input_dim, self.output_dim)
+    
 class ReluLayer(Layer):
     """Layer implementing an element-wise rectified linear transformation."""
 
