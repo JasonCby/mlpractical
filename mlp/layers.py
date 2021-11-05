@@ -13,6 +13,7 @@ respect to the layer parameters.
 """
 
 import numpy as np
+np.seterr(divide='ignore',invalid='ignore')
 import mlp.initialisers as init
 from mlp import DEFAULT_SEED
 
@@ -626,27 +627,8 @@ class RadialBasisFunctionLayer(Layer):
 
     def __repr__(self):
         return 'RadialBasisFunctionLayer(grid_dim={0})'.format(self.grid_dim)
-
-class DropoutLayer(StochasticLayer):
-    """Layer which stochastically drops input dimensions in its output."""
-
-    def __init__(self, rng=None, incl_prob=0.5, share_across_batch=True):
-        """Construct a new dropout layer.
-
-        Args:
-            rng (RandomState): Seeded random number generator.
-            incl_prob: Scalar value in (0, 1] specifying the probability of
-                each input dimension being included in the output.
-            share_across_batch: Whether to use same dropout mask across
-                all inputs in a batch or use per input masks.
-        """
-        super(DropoutLayer, self).__init__(rng)
-        assert incl_prob > 0. and incl_prob <= 1.
-        self.incl_prob = incl_prob
-        self.share_across_batch = share_across_batch
-        self.rng = rng
-     
-    def random_binary_mask(prob_1, shape, rng):
+    
+def random_binary_mask(prob_1, shape, rng):
         """Generates a random binary mask array of a given shape.
 
         Each value in the outputted array should be an indepedently sampled
@@ -673,6 +655,27 @@ class DropoutLayer(StochasticLayer):
                 array = np.hstack((array,[0]))
         return array.reshape(shape)
         raise NotImplementedError()
+
+class DropoutLayer(StochasticLayer):
+    """Layer which stochastically drops input dimensions in its output."""
+
+    def __init__(self, rng=None, incl_prob=0.5, share_across_batch=True):
+        """Construct a new dropout layer.
+
+        Args:
+            rng (RandomState): Seeded random number generator.
+            incl_prob: Scalar value in (0, 1] specifying the probability of
+                each input dimension being included in the output.
+            share_across_batch: Whether to use same dropout mask across
+                all inputs in a batch or use per input masks.
+        """
+        super(DropoutLayer, self).__init__(rng)
+        assert incl_prob > 0. and incl_prob <= 1.
+        self.incl_prob = incl_prob
+        self.share_across_batch = share_across_batch
+        self.rng = rng
+     
+    
         
     def fprop(self, inputs, stochastic=True):
         """Forward propagates activations through the layer transformation.
@@ -690,7 +693,7 @@ class DropoutLayer(StochasticLayer):
             outputs: Array of layer outputs of shape (batch_size, output_dim).
         """
         if stochastic:
-            return random_binary_mask(self.incl_prob, inputs.shape, rng)*inputs
+            return random_binary_mask(self.incl_prob, inputs.shape, self.rng)*inputs
         else:
             return self.incl_prob*inputs
         raise NotImplementedError
@@ -713,6 +716,7 @@ class DropoutLayer(StochasticLayer):
             Array of gradients with respect to the layer inputs of shape
             (batch_size, input_dim).
         """
+        inputs[inputs==0]=1
         return grads_wrt_outputs * (outputs/inputs)
         raise NotImplementedError
 
