@@ -645,7 +645,35 @@ class DropoutLayer(StochasticLayer):
         self.incl_prob = incl_prob
         self.share_across_batch = share_across_batch
         self.rng = rng
+     
+    def random_binary_mask(prob_1, shape, rng):
+        """Generates a random binary mask array of a given shape.
 
+        Each value in the outputted array should be an indepedently sampled
+        binary value i.e in {0, 1} with the probability of each value
+        being 1 being equal to `prob_1`.
+
+        Args:
+            prob_1: Scalar value in [0, 1] specifying probability each
+                entry in output array is equal to one.
+            shape: Shape of returned mask array.
+            rng (RandomState): Seeded random number generator object.
+
+        Returns:
+            Random binary mask array of specified shape.
+        """
+        num=1
+        array=np.array([])
+        for i in shape:
+            num=num*i
+        for i in range(num):
+            if(rng.uniform(0,1)<=prob_1):
+                array = np.hstack((array,[1]))
+            else:
+                array = np.hstack((array,[0]))
+        return array.reshape(shape)
+        raise NotImplementedError()
+        
     def fprop(self, inputs, stochastic=True):
         """Forward propagates activations through the layer transformation.
 
@@ -661,8 +689,12 @@ class DropoutLayer(StochasticLayer):
         Returns:
             outputs: Array of layer outputs of shape (batch_size, output_dim).
         """
+        if stochastic:
+            return random_binary_mask(self.incl_prob, inputs.shape, rng)*inputs
+        else:
+            return self.incl_prob*inputs
         raise NotImplementedError
-
+    
     def bprop(self, inputs, outputs, grads_wrt_outputs):
         """Back propagates gradients through a layer.
 
@@ -681,6 +713,7 @@ class DropoutLayer(StochasticLayer):
             Array of gradients with respect to the layer inputs of shape
             (batch_size, input_dim).
         """
+        return grads_wrt_outputs * (outputs/inputs)
         raise NotImplementedError
 
     def __repr__(self):
