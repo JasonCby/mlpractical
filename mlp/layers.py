@@ -743,6 +743,7 @@ def random_binary_mask(prob_1, shape, rng):
                 array = np.hstack((array,[1]))
             else:
                 array = np.hstack((array,[0]))
+        array.reshape(shape)
         return array.reshape(shape)
         raise NotImplementedError()
 
@@ -783,8 +784,26 @@ class DropoutLayer(StochasticLayer):
             outputs: Array of layer outputs of shape (batch_size, output_dim).
         """
         if stochastic:
-            return random_binary_mask(self.incl_prob, inputs.shape, self.rng)*inputs
+            num=1
+            array=np.array([])
+            for i in inputs.shape:
+                num=num*i
+            list1=[]
+            for i in range(num):
+                if(self.rng.uniform(0,1)<=self.incl_prob):
+                    list1.append(1)
+                else:
+                    list1.append(0)
+            #for i in range(num):
+            #    if(self.rng.uniform(0,1)<=self.incl_prob):
+            #        array = np.hstack((array,[1]))
+            #    else:
+            #        array = np.hstack((array,[0]))
+            array = np.asarray(list1)
+            #return np.multiply(self.rng.choice((1,0),p = [self.incl_prob , 1 -self.incl_prob], size = inputs.shape),inputs)
+            return array.reshape(inputs.shape)*inputs
         else:
+            #return np.multiply(self.rng.binomial(1,p = self.incl_prob, size = inputs.shape),inputs)
             return self.incl_prob*inputs
         raise NotImplementedError
     
