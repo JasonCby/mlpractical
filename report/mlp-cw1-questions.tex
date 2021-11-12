@@ -24,12 +24,12 @@
 
 %% Question 1:
 \newcommand{\questionOne} {
-\youranswer{Overfitting is a phenomenon that model has too good results on the training set and not so good results on the test set (even with the progress of learning epochs, the accuracy rate decreases).}
+\youranswer{Overfitting is making prediction too strict in order to produce consistent predictions in a particular data set, so that it can not predict data well on test sets or other data sets.}
 }
 
 %% Question 2:
 \newcommand{\questionTwo} {
-\youranswer{Question 2 - Summarise the effect increasing width and depth of the architecture had on overfitting}
+\youranswer{With the increase of the width and depth of the architecture, the generalization gap increases and the overfitting becomes more obvious.}
 }
 
 %% Question 3:
@@ -44,27 +44,28 @@
 
 %% Question 5:
 \newcommand{\questionFive} {
-\youranswer{Question 5 - Explain what overfitting is in detail and in your own words}
+\youranswer{Overfitting is a phenomenon that model has too good results on the training set and not so good results on the test set. For example with the progress of learning epochs, the accuracy rate decreases or does not increase like that on training set and generalization gap increases sharply especially on test set.}
 }
 
 %% Question 6:
 \newcommand{\questionSix} {
-\youranswer{Question 6 - Discuss ``why'' and ``how'' overfitting occurs, and ``how'' one can identify it is happening}
+\youranswer{Overfitting occurs for a number of reasons. First, the modeling sample set is incorrectly selected. For example, the number of sample sets is too small, leading to the sample data is not enough to represent the predetermined classification. Second, the noise contained in the sample set is too large, leading to the machine to regard part of the noise as valid data and thus interfere with the classification. Thirdly, the model has too many parameters and too much complexity (too much width and depth). In general, when the error rate of the model in the validation set is not significantly reduced or even increases with the number of learning rounds, or the generalization gap is extremely large, we can think that overfitting has occurred. From a practical point of view, the most important point is the classification accuracy, and when the classification accuracy on the test set no longer increases with that of the training set, it can be considered that there is an overfitting.}
 }
 
 %% Question 7:
 \newcommand{\questionSeven} {
-\youranswer{Question 7 - Explain what these figures contain and how the curves evolve, and spot where overfitting occurs. Reason based on the min/max points and velocities (direction and magnitude of change) of the accuracy and error curves}
+\youranswer{These two figures reflect the performance of classification accuracy and cross entropy errors in training set and verification set. As you can see from these two graphs, both of them are steadily rising or falling in the training set. However, in the validation set, after the vertex of the image curve (the point with slope 0), the two develop in reverse. The cross entropy error shows an upward trend around the 15th epoch, which can be considered as a sign of overfitting. But from a practical point of view, what we really care about is improving the classification accuracy on the validation data, so we think that the vertex of the classification accuracy curve on the validation set is the point where overfitting begins to dominate learning.}
 }
 
 %% Question 8:
 \newcommand{\questionEight} {
-\youranswer{Question 8 - Explain your network width experiment results by using the relevant figure and table}
+\youranswer{From Table 1 and Figure 2, we can see that with the increase of model width, the accuracy rate of prediction increases continuously in the training set. But the results on the validation set were roughly the same (around 0.8). As the width of the model increases, the cross entropy error decreases in the training set, but the generalization gap increases (from 0.148 to 0.811).At the same time, around the 20th epoch, the models with width 64 and 128 appeared overfitting (the accuracy on validation set stops increasing and the errors in the validation set increased rather than decreased).}
 }
 
 %% Question 9:
 \newcommand{\questionNine} {
-\youranswer{Question 9 - Discuss whether varying width affects the results in a consistent way, and whether the results are expected and match well with the prior knowledge (by which we mean your expectations as are formed from the relevant Theory and literature)}
+\youranswer{From the images and data, it can be seen that the model with width 32 is underfitting (the result on the verification set is much lower than the result on the training set), the model with width 64 and 128 is overfitting, and the model with width 128 is overfitting more seriously.
+To some extent, this confirms the previous explanation of the cause of overfitting and the possibility of overfitting is higher when the model complexity is too high.}
 }
 
 %% Question 10:
@@ -127,13 +128,13 @@
 \begin{figure}[t]
     \centering
     \begin{subfigure}{\linewidth}
-        \includegraphics[width=\linewidth]{figures/empty_acc_curve_width.png}
+        \includegraphics[width=\linewidth]{figures/empty_acc_curve_width_1.pdf}
         \caption{accuracy by epoch}
         \label{fig:width_acccurves}
     \end{subfigure} 
     \begin{subfigure}{\linewidth}
         \centering
-        \includegraphics[width=\linewidth]{figures/empty_error_curve_width.png}
+        \includegraphics[width=\linewidth]{figures/empty_error_curve_width_1.pdf}
         \caption{error by epoch}
         \label{fig:width_errorcurves}
     \end{subfigure} 
@@ -150,13 +151,13 @@
 \begin{figure}[t]
     \centering
     \begin{subfigure}{\linewidth}
-        \includegraphics[width=\linewidth]{figures/empty_acc_curve_depth.png}
+        \includegraphics[width=\linewidth]{figures/empty_acc_curve_depth_1.pdf}
         \caption{accuracy by epoch}
         \label{fig:depth_acccurves}
     \end{subfigure} 
     \begin{subfigure}{\linewidth}
         \centering
-        \includegraphics[width=\linewidth]{figures/empty_error_curve_depth.png}
+        \includegraphics[width=\linewidth]{figures/empty_error_curve_depth_1.pdf}
         \caption{error by epoch}
         \label{fig:depth_errorcurves}
     \end{subfigure} 
@@ -208,9 +209,9 @@ Question Table 1 - Fill in Table 1 with the results from your experiments varyin
     \toprule
         \# hidden units & val. acc. & generalization gap \\
     \midrule
-         32            &            &                    \\
-         64            &            &                    \\
-         128           &            &                    \\ 
+         32            & 0.788           & 0.148                   \\
+         64            & 0.805           & 0.344                   \\
+         128           & 0.807           & 0.811                   \\ 
     \bottomrule
     \end{tabular}
     \caption{Validation accuracy (\%) and generalization gap (in terms of cross-entropy error) for varying network widths on the EMNIST dataset.}
@@ -230,9 +231,9 @@ Question Table 2 - Fill in Table 2 with the results from your experiments varyin
     \toprule
         \# hidden layers & val. acc. & generalization gap \\
     \midrule
-         1               &            &                    \\
-         2               &            &                    \\
-         3               &            &                    \\ 
+         1               & 0.809           & 0.800                   \\
+         2               & 0.816           & 1.432                   \\
+         3               & 0.821           & 1.594                   \\ 
     \bottomrule
     \end{tabular}
     \caption{Validation accuracy (\%) and generalization gap (in terms of cross-entropy error) for varying network depths on the EMNIST dataset.}

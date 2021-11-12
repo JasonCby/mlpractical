@@ -784,24 +784,34 @@ class DropoutLayer(StochasticLayer):
             outputs: Array of layer outputs of shape (batch_size, output_dim).
         """
         if stochastic:
-            num=1
-            array=np.array([])
-            for i in inputs.shape:
-                num=num*i
-            list1=[]
-            for i in range(num):
-                if(self.rng.uniform(0,1)<=self.incl_prob):
-                    list1.append(1)
-                else:
-                    list1.append(0)
+            #num=1
+            #array=np.array([])
+            #for i in inputs.shape:
+            #    num=num*i
+            #list1=[]
+            #for i in range(num):
+            #    if(self.rng.uniform(0,1)<=self.incl_prob):
+             #       list1.append(1)
+             #   else:
+             #       list1.append(0)
             #for i in range(num):
             #    if(self.rng.uniform(0,1)<=self.incl_prob):
             #        array = np.hstack((array,[1]))
             #    else:
             #        array = np.hstack((array,[0]))
-            array = np.asarray(list1)
+            #array = np.asarray(list1)
             #return np.multiply(self.rng.choice((1,0),p = [self.incl_prob , 1 -self.incl_prob], size = inputs.shape),inputs)
-            return array.reshape(inputs.shape)*inputs
+            #return array.reshape(inputs.shape)*inputs
+            #arr = self.rng.binomial(1,p = self.incl_prob, size = inputs.shape)
+            #where_0 = np.where(arr == 0)
+            #where_1 = np.where(arr == 1)
+            #arr[where_0] = 1
+            #arr[where_1] = 0
+            if self.share_across_batch:
+                mask = self.rng.uniform(0,1,size= inputs.shape[1:]) < self.incl_prob
+            else:
+                mask = self.rng.uniform(0,1,size= inputs.shape) < self.incl_prob
+            return mask*inputs
         else:
             #return np.multiply(self.rng.binomial(1,p = self.incl_prob, size = inputs.shape),inputs)
             return self.incl_prob*inputs
