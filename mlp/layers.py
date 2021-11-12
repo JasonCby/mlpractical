@@ -387,10 +387,12 @@ class AffineLayer(LayerWithParameters):
         grads_wrt_biases = np.sum(grads_wrt_outputs, axis=0)
 
         if self.weights_penalty is not None:
-            grads_wrt_weights += self.weights_penalty.grad(parameter=self.weights)
+            l2 = L2Penalty(self.weights_penalty)
+            grads_wrt_weights += l2.grad(self.weights)
 
         if self.biases_penalty is not None:
-            grads_wrt_biases += self.biases_penalty.grad(parameter=self.biases)
+            l2 = L2Penalty(self.biases_penalty)
+            grads_wrt_biases += l2.grad(self.biases)
 
         return [grads_wrt_weights, grads_wrt_biases]
 
@@ -401,9 +403,12 @@ class AffineLayer(LayerWithParameters):
         """
         params_penalty = 0
         if self.weights_penalty is not None:
-            params_penalty += self.weights_penalty(self.weights)
+            l2 = L2Penalty(self.weights_penalty)
+            params_penalty += l2(self.weights)
+
         if self.biases_penalty is not None:
-            params_penalty += self.biases_penalty(self.biases)
+            l2 = L2Penalty(self.biases_penalty)
+            params_penalty += l2(self.biases)
         return params_penalty
 
     @property
