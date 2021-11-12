@@ -405,6 +405,7 @@ class AffineLayer(LayerWithParameters):
         if self.weights_penalty is not None:
             l2 = L2Penalty(self.weights_penalty)
             params_penalty += l2(self.weights)
+            
         if self.biases_penalty is not None:
             l2 = L2Penalty(self.biases_penalty)
             params_penalty += l2(self.biases)
