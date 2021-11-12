@@ -70,48 +70,57 @@ To some extent, this confirms the previous explanation of the cause of overfitti
 
 %% Question 10:
 \newcommand{\questionTen} {
-<<<<<<< Updated upstream
-\youranswer{Question 10 - Explain your network depth experiment results by using the relevant figure and table}
-=======
 \youranswer{On the training set, the classification accuracy becomes higher and the errors become lower as the depth of the model increases. However, in the validation set, the classification accuracy of the three models is roughly the same (only slightly improved with the increase of depth), and the error and generalization gaps become larger with the increase of depth.}
->>>>>>> Stashed changes
 }
 
 %% Question 11:
 \newcommand{\questionEleven} {
-<<<<<<< Updated upstream
-\youranswer{Question 11 - Discuss whether varying depth affects the results in a consistent way, and whether the results are expected and match well with the prior knowledge (by which we mean your expectations as are formed from the relevant Theory and literature)}
-=======
 \youranswer{The effects of different depths on the results are consistent. As the depth of the model increases, the classification accuracy becomes higher in both sets, even if it is very small in the validation set. On the validation set, error and generalization gaps become larger with increasing depth.
 This is consistent with the previous description of over-complex models leading to overfitting. As can be seen from the generalization gap, the overfitting of the model becomes more serious with the increase of depth.}
->>>>>>> Stashed changes
 }
 
 %% Question 12:
 \newcommand{\questionTwelve} {
-<<<<<<< Updated upstream
-\youranswer{Question 12 - Compare and discuss how varying width and height changes the performance and overfitting in your experiments}
-=======
 \youranswer{With the increase of model complexity (width and depth), the performance of the model increases little, but the degree of overfitting increases significantly.}
->>>>>>> Stashed changes
 }
 
 %% Question 13:
 \newcommand{\questionThirteen} {
-<<<<<<< Updated upstream
-\youranswer{Question 13 - Explain L1/L2 weight penalties first in words and then with formulas. Explain how they are incorporated to training and what hyperparameter(s) they require}
-=======
 \youranswer{In machine learning, the loss function is usually followed by an extra term. There are two common extra terms, L1-norm and L2-norm.
 These two can be viewed as the penalty terms of the loss function.
+
 L1-norm refers to the sum of the absolute values of each element in the weight vector W, usually expressed as \begin{equation}
 \| \boldsymbol{v} \|_1 = \sum_{d=1}^D \left| v_d \right|,
-\end{equation}}
->>>>>>> Stashed changes
+\end{equation}
+To weigh the penalty term, add a positive scalar coefficient, $\beta_i$.\begin{equation}
+  C^{(i)}_{\textrm{L1}} = 
+  \beta_i \left\| \boldsymbol{p}^{(i)} \right\|_1 = 
+  \beta_i  \sum_{d=1}^D \left| p^{(i)}_d \right|.
+\end{equation}
+The gradient of the parameter vector is \begin{equation}
+  \frac{\partial C^{(i)}_{\textrm{L1}}}{\partial p^{(i)}_d} = \beta_i \, \textrm{sgn}\left( p^{(i)}_d \right)
+\end{equation}
+
+
+L2-norm refers to the sum square root of the squares of each element in the weight vector W, and is defined as.\begin{equation}
+\| \boldsymbol{v} \|_2 = \left[ \sum_{d=1}^D \left( v_d^2 \right) \right]^{\frac{1}{2}}.
+\end{equation}
+Similarly, to weigh the penalty term, add a positive scalar coefficient, $\beta_i$.\begin{equation}
+  C^{(i)}_{\textrm{L2}} = 
+  \frac{1}{2} \beta_i \left\| \boldsymbol{p}^{(i)} \right\|_2^2 =
+  \frac{1}{2} \beta_i \sum_{d=1}^D \left[ \left( p^{(i)}_d \right)^2 \right].
+\end{equation}
+And notice that $\frac{1}{2}$ isn't necessary here, we're just trying to figure out the gradient later, so that $\frac{1}{2}$ and 2 can multiply and cancel out to 1.\begin{equation}
+  \frac{\partial C^{(i)}_{\textrm{L2}}}{\partial p^{(i)}_d} = \beta_i p^{(i)}_d
+\end{equation}
+
+L1 and L2 penalties are very easy to implement. It can be implemented in an AffineLayer, adding the gradient of the penalty term to the existing gradient and returning the penalty term of the layer dependent parameter. The gradient of the penalty term and the penalty term themselves can be calculated by the function according to the formula. The function parameter which can be adjusted freely is the coefficient before the penalty term.
+}
 }
 
 %% Question 14:
 \newcommand{\questionFourteen} {
-\youranswer{Question 14 - Discuss how/why the weight penalties may address overfitting, discuss how L1 and L2 regularization differ and support your claims with references where possible}
+\youranswer{During the fitting process, it is generally preferred to keep the weights as small as possible and construct a model with relatively small parameters. Because it is generally considered that the model with smaller parameter value is relatively simple and can avoid the over-fitting phenomenon to a certain extent. In the gradient descent algorithm, L2-norm iteratively multiplizes a factor less than 1 to make the result progressively smaller, resulting in a smaller parameter (called weight decay). Unlike L2-norm, L1-norm can generate a sparse weight matrix for feature selection. Many elements in the sparse matrix are 0, and only a few elements are non-zero, that is, the coefficients of weights. The end result is that L1-norm tends to focus its weight on high-importance connections, while others have a weight of 0. This also reduces the complexity of the model, so it can prevent overfitting to a certain extent.}
 }
 
 %% Question 15:
