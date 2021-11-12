@@ -70,22 +70,43 @@ To some extent, this confirms the previous explanation of the cause of overfitti
 
 %% Question 10:
 \newcommand{\questionTen} {
+<<<<<<< Updated upstream
 \youranswer{Question 10 - Explain your network depth experiment results by using the relevant figure and table}
+=======
+\youranswer{On the training set, the classification accuracy becomes higher and the errors become lower as the depth of the model increases. However, in the validation set, the classification accuracy of the three models is roughly the same (only slightly improved with the increase of depth), and the error and generalization gaps become larger with the increase of depth.}
+>>>>>>> Stashed changes
 }
 
 %% Question 11:
 \newcommand{\questionEleven} {
+<<<<<<< Updated upstream
 \youranswer{Question 11 - Discuss whether varying depth affects the results in a consistent way, and whether the results are expected and match well with the prior knowledge (by which we mean your expectations as are formed from the relevant Theory and literature)}
+=======
+\youranswer{The effects of different depths on the results are consistent. As the depth of the model increases, the classification accuracy becomes higher in both sets, even if it is very small in the validation set. On the validation set, error and generalization gaps become larger with increasing depth.
+This is consistent with the previous description of over-complex models leading to overfitting. As can be seen from the generalization gap, the overfitting of the model becomes more serious with the increase of depth.}
+>>>>>>> Stashed changes
 }
 
 %% Question 12:
 \newcommand{\questionTwelve} {
+<<<<<<< Updated upstream
 \youranswer{Question 12 - Compare and discuss how varying width and height changes the performance and overfitting in your experiments}
+=======
+\youranswer{With the increase of model complexity (width and depth), the performance of the model increases little, but the degree of overfitting increases significantly.}
+>>>>>>> Stashed changes
 }
 
 %% Question 13:
 \newcommand{\questionThirteen} {
+<<<<<<< Updated upstream
 \youranswer{Question 13 - Explain L1/L2 weight penalties first in words and then with formulas. Explain how they are incorporated to training and what hyperparameter(s) they require}
+=======
+\youranswer{In machine learning, the loss function is usually followed by an extra term. There are two common extra terms, L1-norm and L2-norm.
+These two can be viewed as the penalty terms of the loss function.
+L1-norm refers to the sum of the absolute values of each element in the weight vector W, usually expressed as \begin{equation}
+\| \boldsymbol{v} \|_1 = \sum_{d=1}^D \left| v_d \right|,
+\end{equation}}
+>>>>>>> Stashed changes
 }
 
 %% Question 14:
