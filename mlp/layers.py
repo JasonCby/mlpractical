@@ -317,7 +317,7 @@ class AffineLayer(LayerWithParameters):
     def __init__(self, input_dim, output_dim,
                  weights_initialiser=init.UniformInit(-0.1, 0.1),
                  biases_initialiser=init.ConstantInit(0.),
-                 weights_penalty=None, biases_penalty=None, L="L1"):
+                 weights_penalty=None, biases_penalty=None):
         """Initialises a parameterised affine layer.
 
         Args:
@@ -336,7 +336,6 @@ class AffineLayer(LayerWithParameters):
         self.biases = biases_initialiser(self.output_dim)
         self.weights_penalty = weights_penalty
         self.biases_penalty = biases_penalty
-        self.L = L
 
     def fprop(self, inputs):
         """Forward propagates activations through the layer transformation.
@@ -386,22 +385,12 @@ class AffineLayer(LayerWithParameters):
 
         grads_wrt_weights = np.dot(grads_wrt_outputs.T, inputs)
         grads_wrt_biases = np.sum(grads_wrt_outputs, axis=0)
-        if self.L == "L1":
-            if self.weights_penalty is not None:
-                l1 = L1Penalty(self.weights_penalty)
-                grads_wrt_weights += l1.grad(self.weights)
 
-            if self.biases_penalty is not None:
-                l1 = L1Penalty(self.biases_penalty)
-                grads_wrt_biases += l1.grad(self.biases)
-        else:
-            if self.weights_penalty is not None:
-                l2 = L2Penalty(self.weights_penalty)
-                grads_wrt_weights += l2.grad(self.weights)
+        if self.weights_penalty is not None:
+            grads_wrt_weights += self.weights_penalty.grad(parameter=self.weights)
 
-            if self.biases_penalty is not None:
-                l2 = L2Penalty(self.biases_penalty)
-                grads_wrt_biases += l2.grad(self.biases)
+        if self.biases_penalty is not None:
+            grads_wrt_biases += self.biases_penalty.grad(parameter=self.biases)
 
         return [grads_wrt_weights, grads_wrt_biases]
 
@@ -411,22 +400,10 @@ class AffineLayer(LayerWithParameters):
         If no parameter-dependent penalty terms are set this returns zero.
         """
         params_penalty = 0
-        if self.L == "L1":
-            if self.weights_penalty is not None:
-                l1 = L1Penalty(self.weights_penalty)
-                params_penalty += l1(self.weights)
-            
-            if self.biases_penalty is not None:
-                l1 = L1Penalty(self.biases_penalty)
-                params_penalty += l1(self.biases)
-        else:
-            if self.weights_penalty is not None:
-                l2 = L2Penalty(self.weights_penalty)
-                params_penalty += l2(self.weights)
-
-            if self.biases_penalty is not None:
-                l2 = L2Penalty(self.biases_penalty)
-                params_penalty += l2(self.biases)
+        if self.weights_penalty is not None:
+            params_penalty += self.weights_penalty(self.weights)
+        if self.biases_penalty is not None:
+            params_penalty += self.biases_penalty(self.biases)
         return params_penalty
 
     @property
@@ -830,7 +807,7 @@ class DropoutLayer(StochasticLayer):
             #where_1 = np.where(arr == 1)
             #arr[where_0] = 1
             #arr[where_1] = 0
-            if self.share_across_batch:
+            if self.share_across_batch: 
                 mask = self.rng.uniform(0,1,size= inputs.shape[1:]) < self.incl_prob
             else:
                 mask = self.rng.uniform(0,1,size= inputs.shape) < self.incl_prob

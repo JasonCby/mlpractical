@@ -125,27 +125,37 @@ L1 and L2 penalties are very easy to implement. It can be implemented in an Affi
 
 %% Question 15:
 \newcommand{\questionFifteen} {
-\youranswer{Question 15 - Explain the experimental details (e.g. hyperparameters), discuss the results in terms of their generalization performance and overfitting}
+\youranswer{As can be seen from Table 3 and Figure 4a/b, for dropout, the smaller the selected parameters are, the smaller the generalization gap is (the probability of neuron inactivation at each layer increases, thus reducing the complexity of the model), which alleviates overfitting to some extent.
+When the probability is selected as 0.7, the validation accuracy is lower than the baseline, which indicates that this probability will make the model too simple to fit well.
+
+For L1 and L2 penalty, the larger the parameter selection is, the smaller the generalization gaps are, which can alleviate the overfitting. However, when 1e-1 is selected, the validation accuracy of the model is extremely low, indicating that the excessive penalty value will interfere with the correct fitting of the model.
+
+Therefore, for the combined experiment, parameters with validation accuracy higher than the baseline were selected in order to obtain a better fitting effect. The six combinations are shown in Table 3.
+
+As can be seen from Table 3 and Figure 4c, the combination of 0.9 and L2 1e-4 has the highest validation accuracy; the test accuracy of 0.95 and L2 1e-4 is very close, but it has the highest generalization gap. Therefore, 0.9 and L2 1e-4 are the optimal combination.
+Surprisingly, the parameters that achieved the best results in the previous Dropout and L1/L2 penalty, 0.95 and L2 1e-3, did not achieve the optimal validation accuracy, which means that the combination of multiple methods still needs to be tested in practice, and it is not possible to determine the optimal combination based on the results of a single method.}
 }
 
 %% Question 16:
 \newcommand{\questionSixteen} {
-\youranswer{Question 16 - Explain the motivation behind Maxout Networks as presented in \cite{goodfellow2013maxout}}
+\youranswer{Maxout was proposed to optimize the accuracy of dropout and dropout fitting model averaging processes.
+Relu has a gradient attenuation problem at the lower level, and when the gradient does not change with the dropout mask, the dropout is simplified to SGD.
+The linear and maximization operations in Maxout allow the approximations of model averaging to be precise.}
 }
 
 %% Question 17:
 \newcommand{\questionSeventeen} {
-\youranswer{Question 17 - State whether Dropout is compatible (can be used together) with Maxout and explain why}
+\youranswer{Maxout is essentially an activation function. So it can be used with dropout. Maxout also has the advantages of Relu without its disadvantages (neuronal death). When using dropout, the dropout operation precedes the matrix multiplication, not the maxout operation.}
 }
 
 %% Question 18:
 \newcommand{\questionEighteen} {
-\youranswer{Question 18 - Give an overview of the experiment setup in \cite{goodfellow2013maxout} and analyse it from the point of view of how convincing their conclusions are}
+\youranswer{The experiment evaluated the Maxout model on four benchmark datasets (MNIST,CIFAR-10,CIFAR-100,SVHN),through testing on these data sets, Maxout obtained very advanced results. The researchers then built a rectifier of the same size as Maxout for a control experiment, and the results were still good.To demonstrate that Maxout works better with Dropout, the researchers compared it with Tanh and Dropout. Maxout turned out to have better performance. The reasoning process covers a wide range of data sets and uses controlled trials, so the conclusion is convincing.}
 }
 
 %% Question 19:
 \newcommand{\questionNineteen} {
-\youranswer{Question 19 - Briefly draw your conclusions based on the results from the previous sections (what are the take-away messages?) and conclude your report with a recommendation for future directions}
+\youranswer{By training multiple models of different complexity (width and depth), we found that the higher the complexity of the model, the higher the degree of overfitting. But too simple models will lead to underfitting. So choosing the right model size is very important. We then tested two different methods for preventing overfitting (Dropout and L1/L2 penalty) and selected the hyperparameters with better results for the combination experiment. The results show that these two methods can alleviate the overfitting and improve the performance of the model(Validation Accuracy). But the combination experiment tells us that the hyperparameter combination with the best result is not necessarily optimal. Maxout, a special activation function, is introduced at the end of the article. In future experiments Maxout will be considered to replace Relu, and their combination with the Dropout and L1/L2 PENALTY will be evaluated}
 }
 
 
@@ -204,19 +214,19 @@ L1 and L2 penalties are very easy to implement. It can be implemented in an Affi
 \begin{figure*}[t]
     \centering
     \begin{subfigure}{.3\linewidth}
-        \includegraphics[width=\linewidth]{figures/empty_dropout_plot.png}
+        \includegraphics[width=\linewidth]{figures/empty_dropout_plot_1.pdf}
         \caption{Metrics by inclusion rate}
         \label{fig:dropoutrates}
     \end{subfigure} 
     \begin{subfigure}{.3\linewidth}
         \centering
-        \includegraphics[width=\linewidth]{figures/empty_wd_plot.png}
+        \includegraphics[width=\linewidth]{figures/empty_wd_plot_1.pdf}
         \caption{Metrics by weight penalty}
         \label{fig:weightrates}
     \end{subfigure} 
     \begin{subfigure}{.3\linewidth}
         \centering
-        \includegraphics[width=.85\linewidth]{example-image-duck}
+        \includegraphics[width=.85\linewidth]{figures/extra.pdf}
         \caption{Extra experiments}
         \label{fig:extra}
     \end{subfigure} 
@@ -287,27 +297,28 @@ Question Table 3 - Fill in Table 3 with the results from your experiments varyin
         Baseline &  -                    &               0.836 &                 0.290 \\
     \midrule
         \multirow{3}*{Dropout}
-                 & 0.7                   &                     &                   \\
-                 & 0.9                   &                     &                   \\
-                 & 0.95                  &                     &                   \\
+                 & 0.7                   &  \textit{0.832}                   & \textit{0.060}                  \\
+                 & 0.9                   &  \textit{0.857}                   & \textit{0.129}                  \\   
+                 & 0.95                  &  \textbf{0.860}                   & \textbf{0.168}                  \\
     \midrule
         \multirow{3}*{L1 penalty}
-                 & 1e-4                   &                     &                   \\
-                 & 1e-3                   &                     &                   \\
-                 & 1e-1                   &                     &                   \\
+                 & 1e-4                   & \textbf{0.847}                    & \textbf{0.077}                  \\
+                 & 1e-3                   & \textit{0.752}                    & \textit{0.010}                  \\
+                 & 1e-1                   & \textit{0.046}                    & \textit{0.0004}                  \\
     \midrule
         \multirow{3}*{L2 penalty}  
-                 & 1e-4                   & 0.845                    & 0.236                  \\
-                 & 1e-3                   & 0.852                    & 0.096                  \\
-                 & 1e-1                   & 0.019                    & 0                  \\
+                 & 1e-4                   & \textit{0.845}                    & \textit{0.236}                  \\
+                 & 1e-3                   & \textbf{0.852}                    & \textbf{0.096}                  \\
+                 & 1e-1                   & \textit{0.019}                    & \textit{-0.004}                  \\
     \midrule
         \multirow{6}*{Combined}  
                  & for example 0.95, L1 1e-6  &                     &                   \\
-                 & ?, ?                   &                     &                   \\
-                 & ?, ?                   &                     &                   \\
-                 & ?, ?                   &                     &                   \\
-                 & ?, ?                   &                     &                   \\
-                 & ?, ?                   &                     &                   \\
+                 & 0.9,L1 1e-4                   & \textit{0.856}                    & \textit{0.038}                  \\
+                 & 0.95,L1 1e-4                   & \textit{0.763}                    & \textit{0.017}                  \\
+                 & 0.9,L2 1e-4                   & \textbf{0.863}                    & \textbf{0.14}                  \\
+                 & 0.95,L2 1e-4                   & \textit{0.863}                    & \textit{0.206}                  \\
+                 & 0.9,L2 1e-3                   & \textit{0.851}                    & \textit{0.037}                  \\
+			 & 0.95,L2 1e-3                   & \textit{0.855}                    & \textit{0.046}                  \\
     \bottomrule
     \end{tabular}
     \caption{Results of all hyperparameter search experiments. \emph{italics} indicate the best results per series and \textbf{bold} indicate the best overall}
